@@ -27,6 +27,9 @@ namespace PagerBullet
 		public partial class Attribute
 		{
 			
+			// aapt resource value: 0x7f010000
+			public static int panelHeightInDp = 2130771968;
+			
 			static Attribute()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
@@ -37,11 +40,61 @@ namespace PagerBullet
 			}
 		}
 		
-		public partial class String
+		public partial class Color
 		{
 			
 			// aapt resource value: 0x7f020000
-			public static int library_name = 2130837504;
+			public static int pager_bullet_active = 2130837504;
+			
+			// aapt resource value: 0x7f020001
+			public static int pager_bullet_inactive = 2130837505;
+			
+			// aapt resource value: 0x7f020002
+			public static int pager_bullet_text_indicator = 2130837506;
+			
+			static Color()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Color()
+			{
+			}
+		}
+		
+		public partial class Dimension
+		{
+			
+			// aapt resource value: 0x7f030002
+			public static int pager_bullet_indicator_active_dot_diameter = 2130903042;
+			
+			// aapt resource value: 0x7f030001
+			public static int pager_bullet_indicator_dot_margin = 2130903041;
+			
+			// aapt resource value: 0x7f030000
+			public static int pager_bullet_indicator_height = 2130903040;
+			
+			// aapt resource value: 0x7f030003
+			public static int pager_bullet_indicator_inactive_dot_diameter = 2130903043;
+			
+			static Dimension()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Dimension()
+			{
+			}
+		}
+		
+		public partial class String
+		{
+			
+			// aapt resource value: 0x7f040000
+			public static int app_name = 2130968576;
+			
+			// aapt resource value: 0x7f040001
+			public static int pager_bullet_separator = 2130968577;
 			
 			static String()
 			{
@@ -49,6 +102,26 @@ namespace PagerBullet
 			}
 			
 			private String()
+			{
+			}
+		}
+		
+		public partial class Styleable
+		{
+			
+			public static int[] PagerBullet = new int[]
+			{
+					2130771968};
+			
+			// aapt resource value: 0
+			public static int PagerBullet_panelHeightInDp = 0;
+			
+			static Styleable()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Styleable()
 			{
 			}
 		}
