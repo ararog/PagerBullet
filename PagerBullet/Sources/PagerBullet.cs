@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Android.Content;
 using Android.Content.Res;
 using Android.Graphics.Drawables;
@@ -8,6 +9,7 @@ using Android.Util;
 using Android.Views;
 using Android.Widget;
 using Java.Lang;
+using PagerBullet;
 
 namespace Com.Robohorse.PagerBullet
 {
@@ -34,29 +36,30 @@ namespace Com.Robohorse.PagerBullet
 			Init(context);
 		}
 
-		public PagerBullet(Context context, AttributeSet attrs) : base(context, attrs)
+		public PagerBullet(Context context, IAttributeSet attrs) : base(context, attrs)
 		{
 			Init(context);
 			SetAttributes(context, attrs);
 		}
 
-		public PagerBullet(Context context, AttributeSet attrs, int defStyleAttr) : base(context, attrs, defStyleAttr)
+		public PagerBullet(Context context, IAttributeSet attrs, int defStyleAttr) : base(context, attrs, defStyleAttr)
 		{
 			Init(context);
 			SetAttributes(context, attrs);
 		}
 
-		private void SetAttributes(Context context, AttributeSet attrs)
+		private void SetAttributes(Context context, IAttributeSet attrs)
 		{
-			TypedArray typedArray = context.ObtainStyledAttributes(attrs, R.styleable.PagerBullet);
-			string heightValue = typedArray.GetString(R.styleable.PagerBullet_panelHeightInDp);
+			TypedArray typedArray = context.ObtainStyledAttributes(attrs, Resource.Styleable.PagerBullet);
+			string heightValue = typedArray.GetString(Resource.Styleable.PagerBullet_panelHeightInDp);
 
 			if (null != heightValue)
 			{
-				heightValue = heightValue.ReplaceAll(DIGIT_PATTERN, "");
+				Regex rgx = new Regex(DIGIT_PATTERN);
+				heightValue = rgx.Replace(heightValue, "");
 				float height = Float.ParseFloat(heightValue);
-				FrameLayout.LayoutParams params = (LayoutParams)indicatorContainer.LayoutParams;
-	            params.height = Math.Round(TypedValue.ApplyDimension(TypedValue.COMPLEX_UNIT_DIP, height,
+				FrameLayout.LayoutParams parameters = (LayoutParams)indicatorContainer.LayoutParameters;
+				parameters.Height = Math.Round(TypedValue.ApplyDimension(ComplexUnitType.Dip, height,
 						Resources.DisplayMetrics));
 				indicatorContainer.RequestLayout();
 			}
@@ -87,12 +90,15 @@ namespace Com.Robohorse.PagerBullet
 			SetIndicatorItem(position);
 		}
 
-		public ViewPager getViewPager()
+		public ViewPager ViewPager
 		{
-			return viewPager;
+			get
+			{
+				return viewPager;
+			}
 		}
 
-		public void addOnPageChangeListener(ViewPager.OnPageChangeListener onPageChangeListener)
+		public void AddOnPageChangeListener(ViewPager.IOnPageChangeListener onPageChangeListener)
 		{
 			viewPager.AddOnPageChangeListener(onPageChangeListener);
 		}
@@ -108,9 +114,9 @@ namespace Com.Robohorse.PagerBullet
 
 		public void InvalidateBullets(PagerAdapter adapter)
 		{
-			const bool hasSeparator = HasSeparator();
-			textIndicator.Visibility = hasSeparator ? VISIBLE : INVISIBLE;
-			layoutIndicator.Visibility = hasSeparator ? INVISIBLE : VISIBLE;
+			bool hasSeparator = HasSeparator();
+			textIndicator.Visibility = hasSeparator ? ViewStates.Visible : ViewStates.Invisible;
+			layoutIndicator.Visibility = hasSeparator ? ViewStates.Invisible : ViewStates.Visible;
 
 			if (!hasSeparator)
 			{
@@ -123,54 +129,37 @@ namespace Com.Robohorse.PagerBullet
 		private void Init(Context context)
 		{
 			LayoutInflater layoutInflater = LayoutInflater.From(context);
-			View rootView = layoutInflater.Inflate(R.layout.item_view_pager, this);
-			indicatorContainer = rootView.FindViewById(R.id.pagerBulletIndicatorContainer);
-			textIndicator = (TextView)indicatorContainer.FindViewById(R.id.pagerBulletIndicatorText);
-			layoutIndicator = (LinearLayout)indicatorContainer.FindViewById(R.id.pagerBulletIndicator);
+			View rootView = layoutInflater.Inflate(Resource.Layout.item_view_pager, this);
+			indicatorContainer = rootView.FindViewById(Resource.Id.pagerBulletIndicatorContainer);
+			textIndicator = (TextView)indicatorContainer.FindViewById(Resource.Id.pagerBulletIndicatorText);
+			layoutIndicator = (LinearLayout)indicatorContainer.FindViewById(Resource.Id.pagerBulletIndicator);
 
-			viewPager = (ViewPager)rootView.FindViewById(R.id.viewPagerBullet);
-			viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-				@Override
-				public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
-				{
-
-				}
-
-				@Override
-				public void onPageSelected(int position)
-				{
-					SetIndicatorItem(position);
-				}
-
-				@Override
-				public void onPageScrollStateChanged(int state)
-				{
-
-				}
-			});
+			viewPager = (ViewPager)rootView.FindViewById(Resource.Id.viewPagerBullet);
+			viewPager.PageSelected += (sender, e) =>
+			{
+				SetIndicatorItem(e.Position);
+			};
     	}
 
 	    private void InitIndicator(int count)
 		{
 			layoutIndicator.RemoveAllViews();
-			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.WrapContent,
-				LinearLayout.LayoutParams.WrapContent
+			LinearLayout.LayoutParams parameters = new LinearLayout.LayoutParams(
+				ViewGroup.LayoutParams.WrapContent,
+				ViewGroup.LayoutParams.WrapContent
 			);
 
-			int margin = Math.Round(Resources
-					.GetDimension(R.dimen.pager_bullet_indicator_dot_margin));
+			int margin = Math.Round(Resources.GetDimension(Resource.Dimension.pager_bullet_indicator_dot_margin));
 
-        	params.setMargins(margin, 0, margin, 0);
+        	parameters.SetMargins(margin, 0, margin, 0);
 			Drawable drawableInactive = ContextCompat.GetDrawable(Context,
-					R.drawable.inactive_dot);
+					Resource.Drawable.inactive_dot);
 
 			for (int i = 0; i < count; i++)
 			{
 				ImageView imageView = new ImageView(Context);
 				imageView.SetImageDrawable(drawableInactive);
-				layoutIndicator.AddView(imageView, params);
+				layoutIndicator.AddView(imageView, parameters);
 			}
 		}
 
@@ -193,27 +182,27 @@ namespace Com.Robohorse.PagerBullet
 
 		private void SetItemText(int index)
 		{
-			PagerAdapter adapter = viewPager.getAdapter();
+			PagerAdapter adapter = viewPager.Adapter;
 			if (null != adapter)
 			{
-				const int count = adapter.Count;
-				textIndicator.setText(String.format(getContext()
-						.getString(R.string.pager_bullet_separator), index + 1, count));
+				int count = adapter.Count;
+				textIndicator.Text = String.Format(Context
+						.GetString(Resource.String.pager_bullet_separator), index + 1, count);
 			}
 		}
 
 		private void SetItemBullet(int selectedPosition)
 		{
-			Drawable drawableInactive = ContextCompat.GetDrawable(Context, R.drawable.inactive_dot);
+			Drawable drawableInactive = ContextCompat.GetDrawable(Context, Resource.Drawable.inactive_dot);
 			drawableInactive = WrapTintDrawable(drawableInactive, inactiveColorTint);
-			Drawable drawableActive = ContextCompat.GetDrawable(getContext(), R.drawable.active_dot);
+			Drawable drawableActive = ContextCompat.GetDrawable(Context, Resource.Drawable.active_dot);
 			drawableActive = WrapTintDrawable(drawableActive, activeColorTint);
 
-			const int indicatorItemsCount = layoutIndicator.getChildCount();
+			int indicatorItemsCount = layoutIndicator.ChildCount;
 
 			for (int position = 0; position < indicatorItemsCount; position++)
 			{
-				ImageView imageView = (ImageView)layoutIndicator.getChildAt(position);
+				ImageView imageView = (ImageView)layoutIndicator.GetChildAt(position);
 
 				if (position != selectedPosition)
 				{

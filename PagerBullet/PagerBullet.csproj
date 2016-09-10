@@ -67,6 +67,9 @@
     <AndroidResource Include="Resources\values\attrs.xml" />
     <AndroidResource Include="Resources\values\colors.xml" />
     <AndroidResource Include="Resources\values\dimens.xml" />
+    <AndroidResource Include="Resources\layout\item_view_pager.xml" />
+    <AndroidResource Include="Resources\drawable\active_dot.xml" />
+    <AndroidResource Include="Resources\drawable\inactive_dot.xml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Sources\" />
